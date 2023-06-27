@@ -1,4 +1,3 @@
-const pool = require('../connection.js')
 const {topicsModel} = require('../models/data.model.js')
 
 exports.getTopics = (req, res, next) => {

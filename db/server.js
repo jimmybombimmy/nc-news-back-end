@@ -6,5 +6,3 @@ function serverInfo(app) {
       else console.log(`Server running on port 9090`);
     });
 }
-
-module.exports = serverInfo

@@ -17,11 +17,11 @@ describe("GET /api/topics", () => {
         .then(({
           body
         }) => {
-          expect(body).toMatchObject(testData.topicData)
+          expect(body).toEqual(testData.topicData)
           expect(body).toHaveLength(3)
           for (let i = 0; i < body.length; i++) {
-            expect(body[0]).toHaveProperty("slug", expect.any(String))
-            expect(body[0]).toHaveProperty("description", expect.any(String))
+            expect(body[i]).toHaveProperty("slug", expect.any(String))
+            expect(body[i]).toHaveProperty("description", expect.any(String))
           }
         })
     })
