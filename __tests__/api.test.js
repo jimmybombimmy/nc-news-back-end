@@ -101,7 +101,6 @@ describe('GET /api', () => {
             }
             if (body[route]['exampleResponse'] != null) {
               const pageTitle = Object.keys(body[route]['exampleResponse'])
-              console.log(pageTitle)
               if(Array.isArray(body[route]['exampleResponse'][pageTitle]) === true) {
                 exampleResponseCount++
               }
