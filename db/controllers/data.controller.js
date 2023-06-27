@@ -1,4 +1,12 @@
-const {topicsModel} = require('../models/data.model.js')
+const {topicsModel, getApiModel} = require('../models/data.model.js')
+
+exports.getApiInfo = (req, res, next) => {
+  getApiModel()
+    .then((apiInfo) => {
+      res.status(200).send(apiInfo)
+    })
+    .catch(next)
+}
 
 exports.getTopics = (req, res, next) => {
   topicsModel()
