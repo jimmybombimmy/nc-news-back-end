@@ -1,17 +1,15 @@
 const express = require("express");
-const fs = require("fs/promises");
-
+const serverInfo = require("./db/server.js")
 const {
-  topicsRoute
+  getTopics
 } = require("./db/controllers/data.controller.js")
 
 const app = express();
 
-app.get("/api/topics", topicsRoute);
+app.set('view engine', 'ejs')
 
-app.listen(9090, (err) => {
-  if (err) console.log("Error running on server")
-  else console.log("Server running on port 9090")
-})
+app.get("/api/topics", getTopics);
+
+serverInfo(app)
 
 module.exports = app;
