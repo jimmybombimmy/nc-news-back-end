@@ -45,15 +45,6 @@ describe('GET api/articles', () => {
 
 }),
 
-// Test 1 - api page returns with an object
-// Test 2 - api page returns with endpoints json file
-// Test 3 - api page returns with
-// -  a brief description of the purpose and functionality of the endpoint.
-// -  which queries are accepted.
-// -  what format the request body needs to adhere to.
-// -  what an example response looks like.
-// Test 4 - amount of objects representing each route, equal to the amount of routes created
-
 //This set of tests needs to be last as it counts the amount of other routes in its test
 describe('GET /api', () => {
   describe('successful connection test(s)', () => {
