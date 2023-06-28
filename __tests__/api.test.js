@@ -4,10 +4,16 @@ const request = require('supertest');
 const seed = require('../db/seeds/seed.js')
 const testData = require('../db/data/test-data')
 const connection = require('../db/connection.js')
+const endpoints = require('../endpoints.json');
+const { Query } = require('pg');
+const articles = require('../db/data/test-data/articles.js')
 
 beforeEach(() => seed(testData))
 afterAll(() => connection.end());
 
+
+//All tests are encased in an array. This assists in counting through every route created. Remember to separate each routes describe block to assist in the count.
+const pageCount = [
 describe("GET /api/topics", () => {
   describe("successful connection test(s)", () => {
     test("200: expect page to respond with corresponding topics table", () => {
@@ -33,4 +39,129 @@ describe("GET /api/topics", () => {
         .expect(404)
     })
   })
+}),
+
+describe('GET api/articles', () => {
+
+}),
+
+describe('GET api/articles/:id', () => {
+  describe('successful connection tests', () => {
+    test('200: article page returns an object', () => {
+      return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(typeof body).toBe('object')
+        })
+    })
+    test('200: article page returns with an article', () => {
+      return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(body).toMatchObject({
+            article_id: 1,
+            title: 'Living in the shadow of a great man',
+            topic: 'mitch',
+            author: 'butter_bridge',
+            body: 'I find this existence challenging',
+            created_at: '2020-07-09T20:11:00.000Z',
+            votes: 100,
+            article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+          })
+        })
+    })
+  })
+  describe('web page error tests', () => {
+    test('400: Bad request - not a number', () => {
+      return request(app)
+        .get(`/api/articles/${NaN}`)
+        .expect(400)
+        .then(({body}) => {
+          console.log(app.body)
+          expect(body).toMatchObject({
+            message: "Bad Request"
+          })
+        })
+    })
+    test('404: Page not found - category_id number does not match', () => {
+      return request(app)
+        .get('/api/articles/9999')
+        .expect(404)
+        .then(({body}) => {
+          expect(body).toMatchObject({
+            message: "Page Not Found"
+          })
+        })
+    })
+  })
+}),
+
+//This set of tests needs to be last as it counts the amount of other routes in its test
+describe('GET /api', () => {
+  describe('successful connection test(s)', () => {
+    test('200: api page returns with an object', () => {
+      return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(typeof body).toBe('object')
+        })
+    })
+    test('200: api page returns with endpoints json file', () => {
+      return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(body).toEqual(endpoints)
+        })
+    })
+    test('200: each object in endpoints file should return with description, query, body format and an example response (except for the first api example)', () => {
+      return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+          let endpointCount = 0
+          let descriptionCount = 0
+          let queryCount = 1
+          let bodyFormatCount = 1
+          let exampleResponseCount = 1
+          for (const route in body) {
+            endpointCount++
+            if (typeof body[route]['description'] === 'string' && body[route]['description'].length > 1) {
+              descriptionCount++
+              
+            }
+            if (Array.isArray(body[route]['queries']) === true) {
+              queryCount++
+            }
+            if (typeof (body[route]['exampleResponse']) === 'object') {
+              bodyFormatCount++
+            }
+            if (body[route]['exampleResponse'] != null) {
+              const pageTitle = Object.keys(body[route]['exampleResponse'])
+              if(Array.isArray(body[route]['exampleResponse'][pageTitle]) === true) {
+                exampleResponseCount++
+              }
+            }
+          }
+          expect(endpointCount).toEqual(pageCount.length)
+          expect(descriptionCount).toEqual(pageCount.length)
+          expect(queryCount).toEqual(pageCount.length)
+          expect(bodyFormatCount).toEqual(pageCount.length)
+          expect(exampleResponseCount).toEqual(pageCount.length)
+        })
+    })
+  })
 })
+
+]
