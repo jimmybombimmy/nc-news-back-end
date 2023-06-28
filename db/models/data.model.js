@@ -1,6 +1,14 @@
 const db = require('../connection.js')
 const fs = require("fs/promises");
 
+exports.getApiModel = () => {
+  return fs.readFile(`endpoints.json`, "utf-8")
+    .then(endpoints => {
+      const parseId = JSON.parse(endpoints);
+      return parseId
+    })
+}
+
 
 exports.getApiModel = () => {
   return fs.readFile(`endpoints.json`, "utf-8")

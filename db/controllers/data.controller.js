@@ -1,8 +1,10 @@
+
 const {
   topicsModel,
   getApiModel,
   getSoleArticleModel
 } = require('../models/data.model.js')
+
 
 exports.getApiInfo = (req, res, next) => {
   getApiModel()
