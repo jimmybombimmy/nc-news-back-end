@@ -1,5 +1,4 @@
 exports.errorHandlers = (err, req, res, next) => {
-  console.log(err)
   // Custom errors
   if (err.status && err.message) {
     res.status(err.status).send({
