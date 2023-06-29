@@ -48,7 +48,7 @@ describe('GET api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
-          expect(Array.isArray(body)).toBe(true)
+          expect(Array.isArray(body.articles)).toBe(true)
         })
     })
     test('200: all articles should have their given properties as listed below', () => {
@@ -58,18 +58,15 @@ describe('GET api/articles', () => {
         .then(({
           body
         }) => {
-          for (let i = 0; i < body.length; i++) {
-            expect(body[i]).toHaveProperty("article_id", expect.any(Number))
-            expect(body[i]).toHaveProperty("title", expect.any(String))
-            expect(body[i]).toHaveProperty("author", expect.any(String))
-            expect(body[i]).toHaveProperty("topic", expect.any(String))
-            expect(body[i]).toHaveProperty("created_at", expect.any(String))
-            expect(body[i]).toHaveProperty("votes", expect.any(Number))
-            expect(body[i]).toHaveProperty("article_img_url", expect.any(String))
-
-            // expect(body[i]).toHaveProperty("comments", expect.any(String))
-            
-            
+          expect(body.articles.length).toBeGreaterThan(0)
+          for (let i = 0; i < body.articles.length; i++) {
+            expect(body.articles[i]).toHaveProperty("article_id", expect.any(Number))
+            expect(body.articles[i]).toHaveProperty("title", expect.any(String))
+            expect(body.articles[i]).toHaveProperty("author", expect.any(String))
+            expect(body.articles[i]).toHaveProperty("topic", expect.any(String))
+            expect(body.articles[i]).toHaveProperty("created_at", expect.any(String))
+            expect(body.articles[i]).toHaveProperty("votes", expect.any(Number))
+            expect(body.articles[i]).toHaveProperty("article_img_url", expect.any(String))
           }
         })
     })
@@ -78,10 +75,10 @@ describe('GET api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
-          let lastPostedArr = body[0].created_at.match(/\d*/g)
+          let lastPostedArr = body.articles[0].created_at.match(/\d*/g)
           let lastPostedNum = Number(lastPostedArr.join(''))
-          for (let i = 0; i < body.length; i++) {
-            let nextPostedArr = body[i].created_at.match(/\d*/g)
+          for (let i = 0; i < body.articles.length; i++) {
+            let nextPostedArr = body.articles[i].created_at.match(/\d*/g)
             let nextPostedNum = Number(nextPostedArr.join(''))
             expect(lastPostedNum).toBeGreaterThanOrEqual(nextPostedNum)
             lastPostedNum = nextPostedNum
@@ -94,8 +91,9 @@ describe('GET api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
-          for (let i = 0; i < body.length; i++) {
-            expect(body[i]).not.toHaveProperty("body")
+          expect(body.articles.length).toBeGreaterThan(0)
+          for (let i = 0; i < body.articles.length; i++) {
+            expect(body.articles[i]).not.toHaveProperty("body")
           }
         })
     })
@@ -104,8 +102,10 @@ describe('GET api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
-          expect(body[2]).toHaveProperty("comment_count")
-          expect(body[6]["comment_count"]).toBe("11")
+          expect(body.articles[6]["comment_count"]).toBe(11)
+          for(let i = 0; i < body.articles.length; i++) {
+            expect(body.articles[i]).toHaveProperty("comment_count", expect.any(Number))
+          }
         })
     })
   })

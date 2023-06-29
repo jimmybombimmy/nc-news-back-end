@@ -24,7 +24,7 @@ exports.getTopics = (req, res, next) => {
 exports.getAllArticles = (req, res, next) => {
   getAllArticlesModel()
     .then((articles) => {
-      res.status(200).send(articles)
+      res.status(200).send({articles})
     })
 }
 
