@@ -42,7 +42,73 @@ describe("GET /api/topics", () => {
 }),
 
 describe('GET api/articles', () => {
+  describe('successful connection tests', () => {
+    test('200: articles page returns an array containing objects of all articles', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+          expect(Array.isArray(body)).toBe(true)
+        })
+    })
+    test('200: all articles should have their given properties as listed below', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          for (let i = 0; i < body.length; i++) {
+            expect(body[i]).toHaveProperty("article_id", expect.any(Number))
+            expect(body[i]).toHaveProperty("title", expect.any(String))
+            expect(body[i]).toHaveProperty("author", expect.any(String))
+            expect(body[i]).toHaveProperty("topic", expect.any(String))
+            expect(body[i]).toHaveProperty("created_at", expect.any(String))
+            expect(body[i]).toHaveProperty("votes", expect.any(Number))
+            expect(body[i]).toHaveProperty("article_img_url", expect.any(String))
 
+            // expect(body[i]).toHaveProperty("comments", expect.any(String))
+            
+            
+          }
+        })
+    })
+    test('200: articles should be ordered by created_at in descending order', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+          let lastPostedArr = body[0].created_at.match(/\d*/g)
+          let lastPostedNum = Number(lastPostedArr.join(''))
+          for (let i = 0; i < body.length; i++) {
+            let nextPostedArr = body[i].created_at.match(/\d*/g)
+            let nextPostedNum = Number(nextPostedArr.join(''))
+            expect(lastPostedNum).toBeGreaterThanOrEqual(nextPostedNum)
+            lastPostedNum = nextPostedNum
+          }
+        })
+
+    })
+    test('200: articles should not include a body when displayed as a full list', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+          for (let i = 0; i < body.length; i++) {
+            expect(body[i]).not.toHaveProperty("body")
+          }
+        })
+    })
+    test('200: comment_count should be added to articles which totals the number of comments of each relevant article', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+          expect(body[2]).toHaveProperty("comment_count")
+          expect(body[6]["comment_count"]).toBe("11")
+        })
+    })
+  })
 }),
 
 describe('GET api/articles/:id', () => {
@@ -83,7 +149,6 @@ describe('GET api/articles/:id', () => {
         .get(`/api/articles/${NaN}`)
         .expect(400)
         .then(({body}) => {
-          console.log(app.body)
           expect(body).toMatchObject({
             message: "Bad Request"
           })
@@ -101,6 +166,8 @@ describe('GET api/articles/:id', () => {
     })
   })
 }),
+
+
 
 //This set of tests needs to be last as it counts the amount of other routes in its test
 describe('GET /api', () => {
