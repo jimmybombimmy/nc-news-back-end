@@ -50,3 +50,18 @@ exports.getSoleArticleModel = (id) => {
       return article.rows[0]
     })
 }
+
+exports.getArticlesCommentsModel = (id) => {
+  return db.query((`
+  SELECT * FROM comments WHERE article_id = ${id}
+  ORDER BY created_at DESC;`))
+    .then(comments => {
+      if (!comments.rows[0] && (id < 1 || id > 13)) {
+        return Promise.reject({
+          status: 404,
+          message: "Page Not Found",
+        });
+      }
+      return comments.rows
+    })
+}

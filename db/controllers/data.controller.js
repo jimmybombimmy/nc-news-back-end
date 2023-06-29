@@ -3,7 +3,8 @@ const {
   topicsModel,
   getApiModel,
   getSoleArticleModel,
-  getAllArticlesModel
+  getAllArticlesModel,
+  getArticlesCommentsModel
 } = require('../models/data.model.js')
 
 
@@ -35,6 +36,15 @@ exports.getSoleArticle = (req, res, next) => {
   getSoleArticleModel(article_id)
     .then((article) => {
       res.status(200).send(article)
+    })
+    .catch(next)
+}
+
+exports.getArticlesComments = (req, res, next) => {
+  const{article_id} = req.params;
+  getArticlesCommentsModel(article_id)
+    .then((comments) => {
+      res.status(200).send({comments})
     })
     .catch(next)
 }
