@@ -2,7 +2,8 @@
 const {
   topicsModel,
   getApiModel,
-  getSoleArticleModel
+  getSoleArticleModel,
+  getAllArticlesModel
 } = require('../models/data.model.js')
 
 
@@ -20,6 +21,13 @@ exports.getTopics = (req, res, next) => {
       res.status(200).send(topics)
     })
     .catch(next)
+}
+
+exports.getAllArticles = (req, res, next) => {
+  getAllArticlesModel()
+    .then((articles) => {
+      res.status(200).send({articles})
+    })
 }
 
 exports.getSoleArticle = (req, res, next) => {
