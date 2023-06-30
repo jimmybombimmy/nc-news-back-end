@@ -183,8 +183,6 @@ const pageCount = [
       })
     })
   }),
-
-  //To do: edit API page to reflect this
   describe('GET /api/articles/:article_id/comments', () => {
     describe('successful connection test(s)', () => {
       test('200: api page returns with an object', () => {
@@ -308,7 +306,91 @@ const pageCount = [
     })
   }),
 
+  describe('POST /api/articles/:article_id/comments', () => {
+    describe('successful connection test(s)', () => {
+      const comment1 = {
+        body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        author: 'lurker',
+      }
+      test('201: page returns with an object', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(comment1)
+          .expect(201)
+          .then(({
+            body
+          }) => {
+            expect(typeof body).toBe('object')
+          })
+      })
+      test('201: returns posted comment', () => {
 
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(comment1)
+          .expect(201)
+          .then(({
+            body
+          }) => {
+            expect(body).toHaveProperty("comment_id", expect.any(Number))
+            expect(body).toHaveProperty("body", expect.any(String))
+            expect(body).toHaveProperty("article_id", expect.any(Number))
+            expect(body).toHaveProperty("author", expect.any(String))
+            expect(body).toHaveProperty("votes", expect.any(Number))
+            expect(body).toHaveProperty("created_at", expect.any(String))
+          })
+      })
+    })
+    describe('web page error tests', () => {
+      const comment1 = {
+        body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        author: 'lurker',
+      }
+      test('400: Bad request - article_id not a number', () => {
+        return request(app)
+          .post(`/api/articles/${NaN}/comments`)
+          .send(comment1)
+          .expect(400)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Bad Request"
+            })
+          })
+      })
+      const comment2 = {
+        body: null,
+        author: 'lurker',
+      }
+      test('400: Bad request - body has a null value', () => {
+        return request(app)
+          .post(`/api/articles/${NaN}/comments`)
+          .send(comment2)
+          .expect(400)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Bad Request"
+            })
+          })
+      })
+      test('404: Page not found - category_id number does not match', () => {
+        return request(app)
+          .post('/api/articles/9999/comments')
+          .send(comment1)
+          .expect(404)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Page Not Found"
+            })
+          })
+      })
+    })
+  }),
 
   //This set of tests needs to be last as it counts the amount of other routes in its test
   describe('GET /api', () => {
