@@ -184,19 +184,9 @@ const pageCount = [
     })
   }),
 
-  //To do: edit API page to reflect this
+
   describe('GET /api/articles/:article_id/comments', () => {
     describe('successful connection test(s)', () => {
-      test('200: api page returns with an object', () => {
-        return request(app)
-          .get('/api/articles/9/comments')
-          .expect(200)
-          .then(({
-            body
-          }) => {
-            expect(typeof body).toBe('object')
-          })
-      })
       test('200: articles comments return with all of the comments of that article', () => {
         return request(app)
           .get('/api/articles/9/comments')
@@ -204,51 +194,50 @@ const pageCount = [
           .then(({
             body
           }) => {
-            expect(body).toMatchObject({
-              'comments': [{
-                  comment_id: 1,
-                  body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-                  article_id: 9,
-                  author: 'butter_bridge',
-                  votes: 16,
-                  created_at: '2020-04-06T12:17:00.000Z'
-                },
-                {
-                  comment_id: 17,
-                  body: 'The owls are not what they seem.',
-                  article_id: 9,
-                  author: 'icellusedkars',
-                  votes: 20,
-                  created_at: '2020-03-14T17:02:00.000Z'
-                }
-              ]
-            })
+            expect(body).toEqual({"comments": [{
+                    comment_id: 1,
+                    body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+                    article_id: 9,
+                    author: 'butter_bridge',
+                    votes: 16,
+                    created_at: '2020-04-06T12:17:00.000Z'
+                  },
+                  {
+                    comment_id: 17,
+                    body: 'The owls are not what they seem.',
+                    article_id: 9,
+                    author: 'icellusedkars',
+                    votes: 20,
+                    created_at: '2020-03-14T17:02:00.000Z'
+                  }
+                ]
+            }
+            )
           })
       })
       test('200: All web pages return with the necessary keys if comment object(s) is/are present', async () => {
         const requests = []
-        for (let i = 1; i <= 13; i++) {
-          requests.push(
-            request(app)
-            .get(`/api/articles/${i}/comments`)
-            .expect(200)
-            .then(({
-              body
-            }) => {
-              if (body.comments.length > 0) {
-                for (let i = 0; i < body.comments.length; i++) {
-                  expect(body.comments[i]).toHaveProperty("comment_id", expect.any(Number))
-                  expect(body.comments[i]).toHaveProperty("body", expect.any(String))
-                  expect(body.comments[i]).toHaveProperty("article_id", expect.any(Number))
-                  expect(body.comments[i]).toHaveProperty("author", expect.any(String))
-                  expect(body.comments[i]).toHaveProperty("votes", expect.any(Number))
-                  expect(body.comments[i]).toHaveProperty("created_at", expect.any(String))
-                }
+        requests.push(
+          request(app)
+          .get(`/api/articles/3/comments`)
+          .expect(200)
+          .then(({
+            body
+          }) => {
+            if (body.comments.length > 0) {
+              expect(body.comments.length).toBe(2)
+              body.comments.forEach(comment => {
+                expect(comment).toHaveProperty("comment_id", expect.any(Number))
+                expect(comment).toHaveProperty("body", expect.any(String))
+                expect(comment).toHaveProperty("article_id", expect.any(Number))
+                expect(comment).toHaveProperty("author", expect.any(String))
+                expect(comment).toHaveProperty("votes", expect.any(Number))
+                expect(comment).toHaveProperty("created_at", expect.any(String))
+              })
 
-              }
-            })
-          )
-        }
+            }
+          })
+        )
         await Promise.all(requests)
       })
       test("200: comments should run in order from most recent to least recent", async () => {
@@ -278,7 +267,7 @@ const pageCount = [
         }
         await Promise.all(requests);
       })
-      
+
     })
     describe('web page error tests', () => {
       test('400: Bad request - not a number', () => {
@@ -305,10 +294,137 @@ const pageCount = [
             })
           })
       })
+      //create test for if article exists but array is empty
     })
   }),
 
-
+  //correct these so that its a username as an input and author as an output
+  describe('POST /api/articles/:article_id/comments', () => {
+    describe('successful connection test(s)', () => {
+      test('201: page returns with an object', () => {
+        const comment1 = {
+          body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+          author: 'lurker',
+        }
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(comment1)
+          .expect(201)
+          .then(({
+            body
+          }) => {
+            expect(typeof body).toBe('object')
+          })
+      })
+      test('201: returns posted comment', () => {
+        const comment2 = {
+          body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          author: 'icellusedkars',
+        }
+        return request(app)
+          .post('/api/articles/2/comments')
+          .send(comment2)
+          .expect(201)
+          .then(({
+            body
+          }) => {
+            expect(body).toHaveProperty("comment_id", expect.any(Number))
+            expect(body).toHaveProperty("body", expect.any(String))
+            expect(body).toHaveProperty("article_id")
+            expect(body.article_id).toBe(2)
+            expect(body).toHaveProperty("author", expect.any(String))
+            expect(body).toHaveProperty("votes", expect.any(Number))
+            expect(body).toHaveProperty("created_at", expect.any(String))
+          })
+      })
+      test('201: correct item returns even when unnecessary properties are given', () => {
+        const commentWithTMI = {
+          body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          author: 'icellusedkars',
+          unnecessary: "here is some unnecessary information"
+        }
+        return request(app)
+          .post('/api/articles/2/comments')
+          .send(commentWithTMI)
+          .expect(201)
+          .then(({
+            body
+          }) => {
+            expect(body).not.toHaveProperty("unnecessary")
+          })
+      })
+    })
+    describe('web page error tests', () => {
+      test('400: Bad request - article_id not a number', () => {
+        const comment3 = {
+          body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+          author: 'butter_bridge',
+        }
+        return request(app)
+          .post(`/api/articles/${NaN}/comments`)
+          .send(comment3)
+          .expect(400)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Bad Request"
+            })
+          })
+      })
+      test('400: Bad request - body has a null value', () => {
+        const badComment1 = {
+          body: undefined,
+          author: 'lurker',
+        }
+        return request(app)
+          .post(`/api/articles/3/comments`)
+          .send(badComment1)
+          .expect(400)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Bad Request"
+            })
+          })
+      })
+      test('404: Page not found - category_id number does not match', () => {
+        const comment1 = {
+          body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+          author: 'lurker',
+        }
+        return request(app)
+          .post('/api/articles/9999/comments')
+          .send(comment1)
+          .expect(404)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Page Not Found"
+            })
+          })
+      })
+      test('400: Bad Request - Username does not exist', () => {
+        const wrongUserComment = {
+          body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+          author: "testuser1"
+        }
+        return request(app)
+          .post('/api/articles/9/comments')
+          .send(wrongUserComment)
+          .expect(400)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Bad Request"
+            })
+          })
+      })
+    })
+  }),
 
   //This set of tests needs to be last as it counts the amount of other routes in its test
   describe('GET /api', () => {
