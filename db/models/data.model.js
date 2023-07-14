@@ -1,5 +1,6 @@
 const db = require('../connection.js')
 const fs = require("fs/promises");
+const errors = require('../errors.js')
 
 exports.getApiModel = () => {
   return fs.readFile(`endpoints.json`, "utf-8")
@@ -51,17 +52,3 @@ exports.getSoleArticleModel = (id) => {
     })
 }
 
-exports.getArticlesCommentsModel = (id) => {
-  return db.query((`
-  SELECT * FROM comments WHERE article_id = ${id}
-  ORDER BY created_at DESC;`))
-    .then(comments => {
-      if (!comments.rows[0] && (id < 1 || id > 13)) {
-        return Promise.reject({
-          status: 404,
-          message: "Page Not Found",
-        });
-      }
-      return comments.rows
-    })
-}
