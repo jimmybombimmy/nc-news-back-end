@@ -6,7 +6,7 @@ exports.errorHandlers = (err, req, res, next) => {
     });
   }
   // psql 400 errors
-  else if (err.code === '22P02' || err.code === '42703') {
+  else if (err.code === '22P02' || err.code === '42703'|| err.code === '23503') {
     res.status(400).send({
       message: 'Bad Request'
     });

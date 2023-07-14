@@ -1,5 +1,6 @@
 const db = require('../connection.js')
 const fs = require("fs/promises");
+const errors = require('../errors.js')
 
 exports.getApiModel = () => {
   return fs.readFile(`endpoints.json`, "utf-8")
@@ -51,40 +52,3 @@ exports.getSoleArticleModel = (id) => {
     })
 }
 
-exports.getArticlesCommentsModel = (id) => {
-  return db.query((`
-  SELECT * FROM comments WHERE article_id = ${id}
-  ORDER BY created_at DESC;`))
-    .then(comments => {
-      if (!comments.rows[0] && (id < 1 || id > 13)) {
-        return Promise.reject({
-          status: 404,
-          message: "Page Not Found",
-        });
-      }
-      return comments.rows
-    })
-}
-
-exports.postArticleCommentModel = (id, {body, author}) => {
-  id = parseInt(id)
-  if (isNaN(id) === true ||body == null) {
-    return Promise.reject({
-      status: 400,
-      message: 'Bad Request'
-    })
-  } else if ((id < 1 || id > 13)) {
-    return Promise.reject({
-      status: 404,
-      message: "Page Not Found",
-    });
-  } 
-  return db.query(`
-    INSERT INTO comments
-    (body, author, article_id)
-    VALUES
-    ($1, $2, $3)
-    RETURNING *;`, [body, author, 1]).then(comment => {
-      return comment.rows[0]
-    })
-}
