@@ -4,8 +4,8 @@ const {
   getApiModel,
   getSoleArticleModel,
   getAllArticlesModel,
-
-} = require('../models/data.model.js')
+  changeSoleArticleModel
+} = require('../models/articles.model.js')
 
 
 exports.getApiInfo = (req, res, next) => {
@@ -40,3 +40,12 @@ exports.getSoleArticle = (req, res, next) => {
     .catch(next)
 }
 
+exports.changeArticleVotes = (req, res, next) => {
+  const {article_id} = req.params
+  const {inc_votes} = req.body
+  changeSoleArticleModel(article_id, inc_votes, res)
+    .then((article) => {
+      res.status(200).send(article)
+    })
+    .catch(next)
+}

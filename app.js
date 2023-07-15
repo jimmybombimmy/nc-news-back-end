@@ -3,9 +3,9 @@ const {
   getTopics,
   getApiInfo,
   getSoleArticle,
-  getAllArticles
-
-} = require("./db/controllers/data.controller.js")
+  getAllArticles,
+  changeArticleVotes
+} = require("./db/controllers/articles.controller.js")
 const {
   getArticlesComments,
   postArticleComment
@@ -28,6 +28,8 @@ app.get("/api/articles/:article_id", getSoleArticle)
 app.get("/api/articles/:article_id/comments", getArticlesComments)
 
 app.post("/api/articles/:article_id/comments", postArticleComment)
+
+app.patch("/api/articles/:article_id", changeArticleVotes)
 
 app.use(errorHandlers);
 

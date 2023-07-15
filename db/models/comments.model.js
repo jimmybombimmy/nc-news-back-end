@@ -47,7 +47,6 @@ exports.postArticleCommentModel = async (id, {
   const idNumberCheck = /(^\d+$)/.test(id)
 
   if (commentsFilter.length === 0 && idNumberCheck === true) {
-    console.log("err404 is true")
     err404 = true;
   } else {
     err404 = false;
