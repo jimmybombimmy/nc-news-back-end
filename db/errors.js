@@ -10,6 +10,7 @@ exports.errorHandlers = (err, req, res, next) => {
     res.status(400).send({
       message: 'Bad Request'
     });
+    errorSend()
   } 
   // internal server error (for if error unidentified)
   else {

@@ -52,3 +52,30 @@ exports.getSoleArticleModel = (id) => {
     })
 }
 
+exports.changeSoleArticleModel = async (id, vote, res) => {
+
+  await db.query((
+    `SELECT votes FROM articles WHERE article_id = ${id}`
+  )).then(({rows}) => {
+    if (rows.length === 0) {
+      return res.status(400).send({
+        message: 'Bad Request'
+      });
+    }
+      return currentVotes = rows[0].votes + vote
+    })
+    
+  await db.query((
+    `UPDATE articles 
+    SET votes = ${currentVotes}
+    WHERE article_id = ${id};`
+  ))
+
+  return db.query((
+    `SELECT * FROM articles WHERE article_id = ${id}`
+  )).then(({rows}) => {
+    return rows
+  })
+
+}
+

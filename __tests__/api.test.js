@@ -298,10 +298,9 @@ const pageCount = [
     })
   }),
 
-  //correct these so that its a username as an input and author as an output
   describe('POST /api/articles/:article_id/comments', () => {
     describe('successful connection test(s)', () => {
-      test('201: page returns with an object', () => {
+      test('201: page returns with an object of comment', () => {
         const comment1 = {
           body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
           author: 'lurker',
@@ -354,7 +353,7 @@ const pageCount = [
           })
       })
     })
-    describe('web page error tests', () => {
+    describe('error tests', () => {
       test('400: Bad request - article_id not a number', () => {
         const comment3 = {
           body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -423,6 +422,79 @@ const pageCount = [
             })
           })
       })
+    })
+  }),
+
+  describe('PATCH /api/articles/:article_id', () => {
+    describe('successful connection tests', () => {
+      //
+      test('returns an object with votes increased by one when passed an inc_votes value of +1', () => {
+        
+        const incVote = {inc_votes: 1}
+
+        return request(app)
+          .patch('/api/articles/4')
+          .send(incVote)
+          .expect(200)
+          .then(({body}) => {
+            const article = body[0]
+            expect(article.article_id).toBe(4)
+            expect(article.title).toBe('Student SUES Mitch!')
+            expect(article.topic).toBe('mitch')
+            expect(article.author).toBe('rogersop')
+            expect(article.created_at).toBe('2020-05-06T01:14:00.000Z')
+            expect(article.votes).toBe(1)
+            expect(article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+          })
+
+      })
+      test('200: returns an object with votes decreased by one when passed an inc_votes value of -1', () => {
+        
+        const decVote = {inc_votes: -1}
+
+        return request(app)
+        .patch('/api/articles/4')
+        .send(decVote)
+        .expect(200)
+        .then(({body}) => {
+          const article = body[0]
+          expect(article.article_id).toBe(4)
+          expect(article.title).toBe('Student SUES Mitch!')
+          expect(article.topic).toBe('mitch')
+          expect(article.author).toBe('rogersop')
+          expect(article.created_at).toBe('2020-05-06T01:14:00.000Z')
+          expect(article.votes).toBe(-1)
+          expect(article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+        })
+
+      })
+    })
+    describe('error tests', () => {
+      test("400: returns an error message when id not a number", () => {
+
+        const incVote = { inc_votes: 1}
+    
+        return request(app)
+        .patch("/api/articles/banana")
+        .send(incVote)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad Request")
+        })
+      })
+      test("400: returns an error message when id doesn't exist", () => {
+
+        const incVote = { inc_votes: 1}
+    
+        return request(app)
+        .patch("/api/articles/999999")
+        .send(incVote)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad Request")
+        })
+      })
+
     })
   }),
 
