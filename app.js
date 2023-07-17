@@ -1,4 +1,6 @@
 const express = require("express");
+const cors = require('cors');
+
 const {
   getTopics,
   getApiInfo,
@@ -8,14 +10,18 @@ const {
 } = require("./db/controllers/articles.controller.js")
 const {
   getArticlesComments,
-  postArticleComment
+  postArticleComment,
+  deleteComment
 } = require("./db/controllers/comments.controller.js")
+
 
 const {errorHandlers} = require("./db/errors.js")
 
 const app = express();
 
 app.use(express.json())
+
+app.use(cors());
 
 app.get("/api", getApiInfo)
 
@@ -31,9 +37,11 @@ app.post("/api/articles/:article_id/comments", postArticleComment)
 
 app.patch("/api/articles/:article_id", changeArticleVotes)
 
+app.delete("/api/comments/:comment_id", deleteComment)
+
+app.delete("")
+
 app.use(errorHandlers);
-
-
 
 app.listen(9090, (err) => {
   if (err) console.log("Error running on server");

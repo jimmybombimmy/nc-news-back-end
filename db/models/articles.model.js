@@ -1,6 +1,7 @@
 const db = require('../connection.js')
 const fs = require("fs/promises");
-const errors = require('../errors.js')
+const errors = require('../errors.js');
+const { log } = require('console');
 
 exports.getApiModel = () => {
   return fs.readFile(`endpoints.json`, "utf-8")
@@ -58,9 +59,10 @@ exports.changeSoleArticleModel = async (id, vote, res) => {
     `SELECT votes FROM articles WHERE article_id = ${id}`
   )).then(({rows}) => {
     if (rows.length === 0) {
-      return res.status(400).send({
+      return Promise.reject({
+        status: 400,
         message: 'Bad Request'
-      });
+      })
     }
       return currentVotes = rows[0].votes + vote
     })
@@ -78,4 +80,6 @@ exports.changeSoleArticleModel = async (id, vote, res) => {
   })
 
 }
+
+
 

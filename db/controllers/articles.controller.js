@@ -49,3 +49,4 @@ exports.changeArticleVotes = (req, res, next) => {
     })
     .catch(next)
 }
+

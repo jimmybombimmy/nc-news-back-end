@@ -171,7 +171,7 @@ const pageCount = [
       })
       test('404: Page not found - category_id number does not match', () => {
         return request(app)
-          .get('/api/articles/9999')
+          .get('/api/articles/999999')
           .expect(404)
           .then(({
             body
@@ -497,6 +497,34 @@ const pageCount = [
 
     })
   }),
+
+describe('DELETE /api/comments/:comment_id', () => {
+    describe('successful connection tests', () => {
+      test('204: article should not exist after being deleted', () => {
+        return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+      })
+      test("400: returns an error message when id not a number", () => {
+        return request(app)
+        .delete("/api/comments/banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad Request")
+        })
+      })
+      test("404: should respond with error message when comment id is invalid but does not exist", () => {
+        return request(app)
+        .delete("/api/comments/99999999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Page not found")
+        })
+      })
+
+    })
+  }),
+
 
   //This set of tests needs to be last as it counts the amount of other routes in its test
   describe('GET /api', () => {
