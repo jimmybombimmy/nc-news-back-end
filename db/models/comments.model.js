@@ -73,3 +73,23 @@ exports.postArticleCommentModel = async (id, {
     })
   }
 }
+
+exports.deleteCommentModel = async (id) => {
+
+  const idNumberCheck = /(^\d+$)/.test(id)
+  const commentCheck = await db.query(`SELECT * FROM comments WHERE comment_id = ${id}`)
+
+  if (idNumberCheck === false) {
+    return Promise.reject({
+      status: 400,
+      message: 'Bad request'
+    })
+  } else if (commentCheck.rows.length === 0) {
+    return Promise.reject({
+      status: 404,
+      message: "Page not found"
+    })
+  }
+
+  return db.query((`DELETE FROM comments WHERE comment_id = ${id}`))
+}

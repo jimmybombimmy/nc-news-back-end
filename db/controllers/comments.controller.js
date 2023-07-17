@@ -1,6 +1,7 @@
 const {
   getArticlesCommentsModel,
-  postArticleCommentModel
+  postArticleCommentModel,
+  deleteCommentModel
 } = require("../models/comments.model")
 
 
@@ -25,6 +26,17 @@ exports.postArticleComment = (req, res, next) => {
   postArticleCommentModel(article_id, newComment)
     .then((comment) => {
       res.status(201).send(comment)
+    })
+    .catch(next)
+}
+
+exports.deleteComment = (req, res, next) => {
+  const {comment_id} = req.params
+  deleteCommentModel(comment_id)
+    .then(() => {
+      res.status(204).send({
+        message: "Page Deleted"
+      })
     })
     .catch(next)
 }
