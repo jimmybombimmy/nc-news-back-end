@@ -13,6 +13,9 @@ const {
   postArticleComment,
   deleteComment
 } = require("./db/controllers/comments.controller.js")
+const {
+  getAllUsers
+} = require("./db/controllers/users.controller.js")
 
 
 const {errorHandlers} = require("./db/errors.js")
@@ -32,6 +35,8 @@ app.get("/api/articles", (getAllArticles))
 app.get("/api/articles/:article_id", getSoleArticle)
 
 app.get("/api/articles/:article_id/comments", getArticlesComments)
+
+app.get("/api/users", getAllUsers)
 
 app.post("/api/articles/:article_id/comments", postArticleComment)
 
