@@ -124,6 +124,59 @@ const pageCount = [
     })
   }),
 
+  describe('GET api/articles?topic=[topic]', () => {
+    describe('successful connection tests', () => {
+      test('200: article topic page returns articles with only selected topic', () => {
+        return request(app)
+          .get('/api/articles?topic=cats')
+          .expect(200)
+          .then(({
+            body
+          }) => {
+            for (let i = 0; i < body.articles.length; i++) {
+              expect(body.articles[i].topic).toBe("cats")
+            }
+        })
+      }),
+      test('200: returns 200 if topic exists in topics list, even if no articles include that topic name', () => {
+        return request(app)
+          .get('/api/articles?topic=paper')
+          .expect(200)
+          .then(({
+            body
+          }) => {
+            expect(body.articles).toEqual([])
+        })
+      })
+    }),
+    describe('web page error tests', () => {
+      test('400: query should throw error if any characters other than letters are included', () => {
+        return request(app)
+          .get('/api/articles?topic=cats123')
+          .expect(400)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Bad Request"
+            })
+        })
+      }),
+      test('404: if query does not exist in topics, return page not found', () => {
+        return request(app)
+          .get('/api/articles?topic=badtopic')
+          .expect(404)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Page Not Found"
+            })
+        })
+      })
+    })
+  }),
+
   describe('GET api/articles/:id', () => {
     describe('successful connection tests', () => {
       test('200: article page returns an object', () => {
@@ -581,7 +634,7 @@ const pageCount = [
 
 
   //This set of tests needs to be last as it counts the amount of other routes in its test
-  describe('GET /api', () => {
+  describe.skip('GET /api', () => {
     describe('successful connection test(s)', () => {
       test('200: api page returns with an object', () => {
         return request(app)

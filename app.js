@@ -6,7 +6,8 @@ const {
   getApiInfo,
   getSoleArticle,
   getAllArticles,
-  changeArticleVotes
+  changeArticleVotes,
+  getArticlesByTopic
 } = require("./db/controllers/articles.controller.js")
 const {
   getArticlesComments,
@@ -30,7 +31,7 @@ app.get("/api", getApiInfo)
 
 app.get("/api/topics", getTopics);
 
-app.get("/api/articles", (getAllArticles))
+app.get("/api/articles", getAllArticles)
 
 app.get("/api/articles/:article_id", getSoleArticle)
 
