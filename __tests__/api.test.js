@@ -177,6 +177,22 @@ const pageCount = [
     })
   }),
 
+  describe('GET api/articles?sort_by=[sortedBy]', () => {
+    describe('successful connection tests', () => {
+      test('', () => {
+
+      })
+    })
+  }),
+
+  describe('GET api/articles?order=[asc/desc]', () => {
+    describe('successful connection tests', () => {
+      test('', () => {
+
+      })
+    })
+  }),
+
   describe('GET api/articles/:id', () => {
     describe('successful connection tests', () => {
       test('200: article page returns an object', () => {
@@ -634,7 +650,7 @@ const pageCount = [
 
 
   //This set of tests needs to be last as it counts the amount of other routes in its test
-  describe.skip('GET /api', () => {
+  describe('GET /api', () => {
     describe('successful connection test(s)', () => {
       test('200: api page returns with an object', () => {
         return request(app)
@@ -668,6 +684,7 @@ const pageCount = [
             let queryCount = 1
             let bodyFormatCount = 1
             let exampleResponseCount = 1
+            let pageQuerySubtraction = 0
             for (const route in body) {
               endpointCount++
               if (typeof body[route]['description'] === 'string' && body[route]['description'].length > 1) {
@@ -686,12 +703,16 @@ const pageCount = [
                   exampleResponseCount++
                 }
               }
+              if (body[route]['queries'] !== undefined) {
+                pageQuerySubtraction += body[route]['queries'].length
+              }
+
             }
-            expect(endpointCount).toEqual(pageCount.length)
-            expect(descriptionCount).toEqual(pageCount.length)
-            expect(queryCount).toEqual(pageCount.length)
-            expect(bodyFormatCount).toEqual(pageCount.length)
-            expect(exampleResponseCount).toEqual(pageCount.length)
+            expect(endpointCount).toEqual(pageCount.length - pageQuerySubtraction)
+            expect(descriptionCount).toEqual(pageCount.length - pageQuerySubtraction)
+            expect(queryCount).toEqual(pageCount.length - pageQuerySubtraction)
+            expect(bodyFormatCount).toEqual(pageCount.length - pageQuerySubtraction)
+            expect(exampleResponseCount).toEqual(pageCount.length - pageQuerySubtraction)
           })
       })
     })
