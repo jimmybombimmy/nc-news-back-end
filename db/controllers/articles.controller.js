@@ -27,8 +27,8 @@ exports.getTopics = (req, res, next) => {
 
 exports.getAllArticles = (req, res, next) => {
   const topic = req.query.topic
-  
-  getAllArticlesModel(topic)
+  let order = req.query.order
+  getAllArticlesModel(topic, order)
     .then((articles) => {
       res.status(200).send({articles})
     })

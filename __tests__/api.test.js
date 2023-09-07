@@ -180,13 +180,49 @@ const pageCount = [
   describe('GET api/articles?sort_by=[sortedBy]', () => {
     describe('successful connection tests', () => {
       test('', () => {
-
+        
       })
     })
   }),
 
   describe('GET api/articles?order=[asc/desc]', () => {
     describe('successful connection tests', () => {
+      test('if query states they are sorted by descending, this should be the case (as it is by default)', () => {
+        return request(app)
+        .get('/api/articles?order=desc')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          let lastPostedArr = body.articles[0].created_at.match(/\d*/g)
+          let lastPostedNum = Number(lastPostedArr.join(''))
+          for (let i = 0; i < body.articles.length; i++) {
+            let nextPostedArr = body.articles[i].created_at.match(/\d*/g)
+            let nextPostedNum = Number(nextPostedArr.join(''))
+            expect(lastPostedNum).toBeGreaterThanOrEqual(nextPostedNum)
+            lastPostedNum = nextPostedNum
+          }
+        })
+      })
+      test('if query states they are sorted by ascending, this should be the case', () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          let lastPostedArr = body.articles[0].created_at.match(/\d*/g)
+          let lastPostedNum = Number(lastPostedArr.join(''))
+          for (let i = 0; i < body.articles.length; i++) {
+            let nextPostedArr = body.articles[i].created_at.match(/\d*/g)
+            let nextPostedNum = Number(nextPostedArr.join(''))
+            expect(lastPostedNum).toBeLessThanOrEqual(nextPostedNum)
+            lastPostedNum = nextPostedNum
+          }
+        })
+      })
+    }),
+    describe('web page error tests', () => {
       test('', () => {
 
       })
