@@ -223,8 +223,17 @@ const pageCount = [
       })
     }),
     describe('web page error tests', () => {
-      test('', () => {
-
+      test('400: order query should throw error if anything other than asc/desc is included', () => {
+        return request(app)
+          .get('/api/articles?order=foo')
+          .expect(400)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Bad Request"
+            })
+        })
       })
     })
   }),

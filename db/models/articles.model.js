@@ -32,7 +32,7 @@ exports.topicsModel = () => {
 
 exports.getAllArticlesModel = async(topic, order) => {
   
-  if (/[^A-Za-z]/.test(topic)) {
+  if (/[^A-Za-z]/.test(topic) || order === "error400") {
     return Promise.reject({
       status: 400,
       message: 'Bad Request'

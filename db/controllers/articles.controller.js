@@ -28,6 +28,10 @@ exports.getTopics = (req, res, next) => {
 exports.getAllArticles = (req, res, next) => {
   const topic = req.query.topic
   let order = req.query.order
+  const orderTest = /^(asc|desc)$/.test(order)
+  if (order != undefined && orderTest == false) {
+    order = "error400"
+  }
   getAllArticlesModel(topic, order)
     .then((articles) => {
       res.status(200).send({articles})
