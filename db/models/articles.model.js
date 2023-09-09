@@ -31,6 +31,8 @@ exports.topicsModel = () => {
 
 
 exports.getAllArticlesModel = async(topic, order) => {
+
+  let topicQuery = ''
   
   if (/[^A-Za-z]/.test(topic) || order === "error400") {
     return Promise.reject({
@@ -60,26 +62,17 @@ exports.getAllArticlesModel = async(topic, order) => {
             status: 404,
             message: 'Page Not Found'
           })
+        } else {
+          topicQuery = `WHERE articles.topic = '${topic}'`
         }
       })
-    
 
-    return db.query((`
-    SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count
-    FROM articles
-    LEFT JOIN comments ON comments.article_id = articles.article_id
-    WHERE articles.topic = '${topic}'
-    GROUP BY articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url
-    ORDER BY created_at ${order};
-  `))
-      .then(articles => {
-        return articles.rows
-      })
   }
   return db.query((`
     SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id
+    ${topicQuery}
     GROUP BY articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url
     ORDER BY created_at ${order};
   `))

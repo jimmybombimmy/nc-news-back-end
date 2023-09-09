@@ -1,6 +1,7 @@
 To do: post-revisit
 * Follow on from getting articles by topics and put the others into place
 * Try to incorporate all of the queries into one optional piece of SQL code (like with your film-fly data call)
+* Put all of the queries for getting all the articles and getting all articles itself into one describe block and then run tests on a couple of queries at once
 
 To do: Pre-revisit
 * refactor my errors so that they can be imported in the model as apposed to being written out explicitly there
