@@ -238,6 +238,20 @@ const pageCount = [
           })
           expect(authorOnly).toEqual(authorOnly.sort())
         })
+      }),
+      describe('web page error tests', () => {
+        test('400: throw error if sort_by is not in approved list', () => {
+          return request(app)
+          .get('/api/articles?sort_by=bad_sort')
+          .expect(400)
+          .then(({
+            body
+          }) => {
+            expect(body).toMatchObject({
+              message: "Bad Request"
+            })
+          })
+        })
       })
     })
   }),
