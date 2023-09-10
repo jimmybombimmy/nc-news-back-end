@@ -1,16 +1,10 @@
 const app = require('../app.js');
 const request = require('supertest');
-const express = require("express");
 
 const seed = require('../db/seeds/seed.js')
 const testData = require('../db/data/test-data')
 const connection = require('../db/connection.js')
 const endpoints = require('../endpoints.json');
-const {
-  Query
-} = require('pg');
-
-const articles = require('../db/data/test-data/articles.js')
 
 
 beforeEach(() => seed(testData))
