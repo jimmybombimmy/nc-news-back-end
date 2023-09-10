@@ -30,9 +30,12 @@ exports.topicsModel = () => {
 }
 
 
-exports.getAllArticlesModel = async(topic, order) => {
+exports.getAllArticlesModel = async(topic, sort_by, order) => {
+
+  const allowableSortArray = ['title', 'topic', 'author', 'created_at', 'votes', 'comment_count']
 
   let topicQuery = ''
+  let orderByQuery = ''
   
   if (/[^A-Za-z]/.test(topic) || order === "error400") {
     return Promise.reject({
@@ -42,8 +45,14 @@ exports.getAllArticlesModel = async(topic, order) => {
   }
   
   if (order === undefined) { 
-    order = 'desc';
+    if (sort_by === 'title' || sort_by === 'topic' || sort_by === 'author' || sort_by === 'title') {
+      order = 'asc'
+    } else {
+      order = 'desc';
+    }
+    
   }
+
   if (topic !== undefined) {
     let badTopicCheck = true
     await db.query((`SELECT slug FROM topics`))
@@ -68,16 +77,36 @@ exports.getAllArticlesModel = async(topic, order) => {
       })
 
   }
-  return db.query((`
-    SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count
-    FROM articles
-    LEFT JOIN comments ON comments.article_id = articles.article_id
-    ${topicQuery}
-    GROUP BY articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url
-    ORDER BY created_at ${order};
-  `))
-    .then(articles => {
-      return articles.rows
+
+  if (sort_by !== undefined) {
+    let badSortCheck = true
+    allowableSortArray.map(item => {
+      if (item === sort_by) {
+        badSortCheck = false
+      }
+    })
+    if (badSortCheck === true) {
+      return Promise.reject({
+        status: 400,
+        message: 'Bad Request'
+      })
+    } else {
+      orderByQuery = `ORDER BY ${sort_by} ${order}`
+    }
+  } else {
+    orderByQuery = `ORDER BY created_at ${order}`
+  }
+
+  const sqlQuery = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count
+  FROM articles
+  LEFT JOIN comments ON comments.article_id = articles.article_id
+  ${topicQuery}
+  GROUP BY articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url
+  ${orderByQuery}`
+
+  return db.query((sqlQuery))
+    .then(({rows}) => {
+      return rows
     })
 }
 

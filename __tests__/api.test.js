@@ -180,8 +180,64 @@ const pageCount = [
 
   describe('GET api/articles?sort_by=[sortedBy]', () => {
     describe('successful connection tests', () => {
-      test('', () => {
-        
+      test('sort_by query should default to when the article is created', () => {
+        let defaultBody;
+        request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          defaultBody = body
+        })
+
+        return request(app)
+        .get('/api/articles?sort_by=created_at')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(defaultBody).toEqual(body)
+        })
+      }),
+      test(`changing sort_by query should allow the articles to be ordered`, () => {
+        request(app)
+        .get('/api/articles?sort_by=votes')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          let lastPostedArticle = body.articles[0].votes
+          for (let i = 0; i < body.articles.length; i++) {
+            let nextPostedArticle = body.articles[i].votes
+            expect(lastPostedArticle).toBeGreaterThanOrEqual(nextPostedArticle)
+            lastPostedArticle= nextPostedArticle
+          }
+        })
+        request(app)
+        .get('/api/articles?sort_by=comment_count')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          let lastPostedArticle = body.articles[0].comment_count
+          for (let i = 0; i < body.articles.length; i++) {
+            let nextPostedArticle = body.articles[i].comment_count
+            expect(lastPostedArticle).toBeGreaterThanOrEqual(nextPostedArticle)
+            lastPostedArticle= nextPostedArticle
+          }
+        })
+        return request(app)
+        .get('/api/articles?sort_by=author')
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          const authorOnly = body.articles.map(item => {
+            return item.author
+          })
+          expect(authorOnly).toEqual(authorOnly.sort())
+        })
       })
     })
   }),
