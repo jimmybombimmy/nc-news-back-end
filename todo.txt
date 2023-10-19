@@ -1,2 +1,0 @@
-* refactor my errors so that they can be imported in the model as apposed to being written out explicitly there
-* sort out the tests for the example responses and the responses themselves as they aren't exactly accurate
