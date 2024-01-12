@@ -12,7 +12,7 @@
 </ul>
 
 <h1>Live-version:</h1>
-<p>Please click this link to preview the site: <a href="https://bejewelled-selkie-f9570c.netlify.app/">https://bejewelled-selkie-f9570c.netlify.app/</a></p>
+<p>Please click this link to preview the site: <a href="https://nc-news-jimp.netlify.app">https://bejewelled-selkie-f9570c.netlify.app/</a></p>
 
 <h2>How to run and install the project:</h2>
 <ol>
