@@ -1,7 +1,9 @@
 <h1>NC-News-back-end</h1>
-<p>This project represents the backend repository of the Northcoders News Web-based application. This was completed as part of the Northcoders Software Engineering bootcamp. This allows the frontend to be able to retrieve information for every article, as well as filter articles by topic and sort them by different parameters, as well as voting and leave comments on each article.</p>
+<p>Github - https://github.com/jimp66/nc-news-back-end | Website - https://nc-news-jimp.netlify.app/
 
-<p>The frontend repository as well as its description can be found here: <a href="https://github.com/jimp66/nc-news-front-end">nc-news-front-end</a>
+<p>This project represents the back-end repository of the Northcoders News Web-based application. This was completed as part of the Northcoders Software Engineering bootcamp. This allows the front-end to retrieve information for every article, as well as filter articles by topic, sort them by different parameters, as well as vote and leave comments.</p>
+
+<p>The front-end repository as well as its description can be found here: <a href="https://github.com/jimp66/nc-news-front-end">nc-news-front-end</a>
   
 <p><strong>Tech-stack</strong></p>
 <ul>
@@ -19,7 +21,7 @@
   <li>Fork and clone the project <code>git clone &lt;project link> </code></li>
   <li>Go to the projects folder in the Terminal <code>cd &lt;folder path> </code></li>
   <li>Run the command <code>npm install</code> to install all required dependencies</li>
-  <li>Seed the local data base <code>npm run seed-prod</code></li>
+  <li>Seed the local database <code>npm run seed-prod</code></li>
 </ol>
 
 <h2>Created By:</h2>
