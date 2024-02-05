@@ -1,5 +1,5 @@
 <h1>NC-News-back-end</h1>
-<p>Github - https://github.com/jimp66/nc-news-back-end | Website - https://nc-news-jimp.netlify.app/
+<p><strong>Github</strong> - https://github.com/jimp66/nc-news-back-end <br /> <strong>Website</strong> - https://nc-news-jimp.netlify.app/
 
 <p>This project represents the back-end repository of the Northcoders News Web-based application. This was completed as part of the Northcoders Software Engineering bootcamp. This allows the front-end to retrieve information for every article, as well as filter articles by topic, sort them by different parameters, as well as vote and leave comments.</p>
 
